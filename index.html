@@ -445,9 +445,9 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;ma
 
 <div class="thisweek">
   <span class="lbl">This week</span>
-  <a href="week4-recap.html"><b>Week 4 Recap &amp; Week 5 Outlook</b> Tuesday · finals, ledger, lab, lineup check</a>
-  <a href="week4-read.html"><b>Week 4 Read</b> Sunday night</a>
-  <span class="soon">Week 5 Way Too Early Read · Sunday night</span>
+  <a href="week5-read.html"><b>Week 5 · Way Too Early Read</b> Sunday night · SNF and MNF pending</a>
+  <a href="week4-recap.html"><b>Week 4 Recap &amp; Week 5 Outlook</b> Tuesday</a>
+  <span class="soon">Week 5 Recap &amp; Outlook · Tuesday</span>
 </div>
 
 <div class="headliners" style="margin-top:22px">
@@ -474,7 +474,8 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;ma
   <div class="issue"><div class="wk">Week 2<small>Sun Sept 20</small></div><div><a href="week2-read.html">Way Too Early Read: Claude–Tiger King goes to Sunday night, and a team gets renamed four times</a><p>Josh Allen's 43.3 and two empty D/ST slots.</p></div></div>
   <div class="issue"><div class="wk">Week 1<small>Tue Sept 15</small></div><div><a href="week1-recap.html">Recap &amp; Outlook: Walker walks it off, Achane Man posts 145.5</a><p>Finals, standings, the luck index, and family standings.</p></div></div>
   <div class="issue"><div class="wk">Week 1<small>Sun Sept 13</small></div><div><a href="week1-read.html">Way Too Early Read: Claude's team drops 134 and the editor recuses himself</a><p>Five matchups and one real game left for Monday night.</p></div></div>
-  <div class="issue soon"><div class="wk">Week 5<small>Sun Oct 11</small></div><div><div class="t">Way Too Early Read</div><p>After the late games, Monday night pending.</p></div></div>
+  <div class="issue"><div class="wk">Week 5<small>Sun Oct 11</small></div><div><a href="week5-read.html">Way Too Early Read: the 0-4 team posts the best score of the week</a><p>Fried Rice finishes at 135.95, first place hangs on 0.20 points, and Gonna Nacau You is now Zachubus.</p></div></div>
+  <div class="issue soon"><div class="wk">Week 5<small>Tue Oct 13</small></div><div><div class="t">Weekly Recap &amp; Outlook</div><p>Finals, the ledger, the lab, the lineup check, and Week 6.</p></div></div>
 </div>
 
 <footer><span>The Racket · 2026</span><span>k-vegas mafia · 2026 season</span></footer>
@@ -483,7 +484,7 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;ma
 <script>
 (function(){
   /* ---- ticker ---- */
-  var items=['<b>THE RACKET</b> · THE WEEKLY PAPER OF THE K-VEGAS MAFIA','<span class="g">WEEK 4 FINAL · BIJON FRISE\'S FIRST WIN ON A 62.95-POINT RALLY</span>','COUNTRY ROADS FIRST AT 3-1 · IAN AND RYAN 3-1 · FIVE TEAMS 2-2','<span class="r">TIGER KING LEADS IN POINTS AT 460.45 AND IS 2-2</span>','FRIED RICE 0-4 · LOW-SCORE RECORD SURVIVES BY 4.30','WEEK 5 GAME OF THE WEEK · MIDNIGHTCOKER vs COUNTRY ROADS'];
+  var items=['<b>THE RACKET</b> · THE WEEKLY PAPER OF THE K-VEGAS MAFIA','<span class="g">WEEK 5 READ · FRIED RICE 135.95 · HIGH SCORE FROM THE 0-4 TEAM</span>','COUNTRY ROADS 71.55 · MIDNIGHTCOKER 71.35 · 0.20 APART','<span class="r">ZACHUBUS 39.80 · GONNA NACAU YOU RENAMED FRIDAY</span>','CLAUDE 75.70 WITH FOUR TO PLAY · PROJECTED TO WIN BY 2.2','WEEK 5 RECAP &amp; OUTLOOK · TUESDAY'];
   var track=document.getElementById('track');
   if(track){var html=items.map(function(t){return '<span class="i">'+t+'</span>'}).join('');track.innerHTML=html+html;}
   /* ---- text size ---- */
