@@ -423,6 +423,118 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--siren);outline-offs
 /* footer */
 footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;margin:40px 0 0;padding:14px 0 0;border-top:3px double var(--rule);font-family:var(--board);font-weight:700;letter-spacing:.14em;font-size:.85rem;color:var(--pulp-dim);text-transform:uppercase}
 </style>
+<style>/* ===== The Racket 5.2 — the UI/UX update ===== */
+:root{--seat:#ff3fa4;--seat-soft:rgba(255,63,164,.16);--glass:linear-gradient(180deg,rgba(40,27,32,.80),rgba(23,17,15,.88));--hair:rgba(255,255,255,.09)}
+body{padding-bottom:84px}
+.mod,.game,.hit{border-radius:12px;border-color:var(--hair);background:var(--glass)}
+.sechead{font-family:var(--serif-head);font-weight:900;letter-spacing:.01em;text-transform:none;font-size:1.05rem;color:var(--pulp-dim);border-top:1px solid var(--hair);scroll-margin-top:64px}
+.sechead b{display:block;font-size:clamp(1.9rem,4.6vw,3rem);color:var(--pulp);line-height:1.05;margin-bottom:2px}
+.band{height:220px;border-bottom:0;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+.readmast{border-bottom:0;padding-bottom:4px}
+
+#r52{margin:0 0 6px;scroll-margin-top:64px}
+#r52 button{font:inherit;color:inherit;cursor:pointer}
+
+/* edition line */
+.ed{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 14px;margin:-6px 0 26px;font-family:var(--board);font-weight:600;font-size:1.08rem;letter-spacing:.04em;color:var(--pulp-dim);text-align:center}
+.ed .v{font-family:var(--black);font-size:1.5rem;letter-spacing:.02em;color:var(--bulb-hot);text-shadow:0 0 10px var(--bulb),0 0 26px var(--bulb-glow);line-height:1}
+.ed button{background:none;border:1px solid var(--bulb);color:var(--bulb)!important;border-radius:999px;padding:4px 14px;font-weight:700;letter-spacing:.06em;transition:background .15s,box-shadow .15s}
+.ed button:hover{background:rgba(255,63,164,.12);box-shadow:0 0 14px var(--bulb-glow)}
+
+/* seat picker */
+.seatq{font-family:var(--serif-head);font-weight:900;font-size:clamp(1.5rem,3.6vw,2.3rem);line-height:1.1;margin:0 0 4px;text-align:center}
+.seatsub{font-family:var(--board);font-weight:600;font-size:1.05rem;letter-spacing:.03em;color:var(--pulp-dim);text-align:center;margin:0 0 14px}
+.seats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 16px}
+.seat{--c:#fff;position:relative;text-align:left;background:rgba(15,10,9,.72);border:1.5px solid color-mix(in srgb,var(--c) 55%,transparent);border-radius:10px;padding:9px 11px 8px;min-width:0;transition:transform .15s,box-shadow .2s,border-color .2s,background .2s}
+.seat b{display:block;font-family:var(--board);font-weight:700;font-size:1.28rem;letter-spacing:.07em;text-transform:uppercase;color:var(--c);line-height:1.05;text-shadow:0 0 10px color-mix(in srgb,var(--c) 60%,transparent)}
+.seat small{display:block;font-family:var(--board);font-weight:600;font-size:.86rem;letter-spacing:.03em;color:var(--pulp-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.seat em{position:absolute;top:8px;right:10px;font-style:normal;font-family:var(--board);font-weight:700;font-size:.9rem;color:var(--pulp-dim)}
+.seat:hover{transform:translateY(-2px);border-color:var(--c);box-shadow:0 0 18px color-mix(in srgb,var(--c) 35%,transparent)}
+.seat[aria-pressed=true]{border-color:var(--c);background:color-mix(in srgb,var(--c) 13%,#120c0b);box-shadow:0 0 0 1px var(--c),0 0 26px color-mix(in srgb,var(--c) 45%,transparent)}
+.seat[aria-pressed=true] em{color:var(--c)}
+body[data-seat] .seat[aria-pressed=false]{opacity:.5}
+body[data-seat] .seat[aria-pressed=false]:hover{opacity:1}
+
+/* briefing */
+.brief{display:none;border:1px solid color-mix(in srgb,var(--seat) 55%,transparent);border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,var(--seat) 12%,#150e0d),rgba(23,17,15,.92) 55%);padding:18px 20px 16px;margin:0 0 22px;box-shadow:0 0 40px color-mix(in srgb,var(--seat) 16%,transparent)}
+body[data-seat] .brief{display:block}
+.brief .top{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;justify-content:space-between}
+.brief h2{font-family:var(--serif-head);font-weight:900;font-size:clamp(1.5rem,3.4vw,2.2rem);line-height:1.1;margin:0;color:var(--pulp)}
+.brief h2 span{color:var(--seat);text-shadow:0 0 16px color-mix(in srgb,var(--seat) 50%,transparent)}
+.brief .who{font-family:var(--board);font-weight:700;letter-spacing:.06em;font-size:1.02rem;color:var(--pulp-dim)}
+.brief .who button{background:none;border:0;color:var(--seat)!important;text-decoration:underline;padding:0 0 0 8px;font-weight:700}
+.brief .lede{font-size:1.1rem;line-height:1.55;margin:10px 0 14px;max-width:70ch}
+.brief .lede b{color:var(--seat)}
+.bgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.bx{border:1px solid var(--hair);border-radius:10px;background:rgba(10,7,6,.5);padding:10px 12px 9px;min-width:0}
+.bx .k{font-family:var(--board);font-weight:600;font-size:.95rem;letter-spacing:.04em;color:var(--pulp-dim)}
+.bx .n{font-family:var(--board);font-weight:700;font-size:2.1rem;line-height:1.05;color:var(--pulp);font-variant-numeric:tabular-nums}
+.bx .n.s{color:var(--seat)}
+.bx .d{font-family:var(--board);font-weight:600;font-size:.98rem;letter-spacing:.02em;color:var(--pulp-dim);line-height:1.3;margin-top:2px}
+.bx .meter{height:6px;border-radius:3px;background:rgba(255,255,255,.08);margin-top:7px;overflow:hidden}
+.bx .meter i{display:block;height:100%;width:0;background:var(--seat);border-radius:3px;transition:width .5s}
+.bx.wide{grid-column:span 2}
+.bx.all{grid-column:1/-1}
+.bx.lc{border-color:var(--lc)}
+.bx.lc .k b{color:var(--lc);font-weight:700}
+.bx.lc p{margin:4px 0 0;font-size:1rem;line-height:1.5}
+.spark{display:block;max-width:100%;height:54px;margin-top:6px;overflow:visible}
+
+/* race */
+.race{border:1px solid var(--hair);border-radius:14px;background:var(--glass);padding:16px 16px 12px;margin:0 0 8px}
+.race .rh{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px}
+.race h2{font-family:var(--serif-head);font-weight:900;font-size:clamp(1.4rem,3vw,2rem);margin:0;line-height:1.1}
+.race .cap{font-family:var(--board);font-weight:600;font-size:1.08rem;letter-spacing:.02em;color:var(--pulp-dim);min-height:2.7em;margin:6px 0 2px;line-height:1.3}
+.race .cap b{color:var(--pulp);font-weight:700}
+.race .wkno{font-family:var(--black);font-size:1.7rem;color:var(--bulb-hot);text-shadow:0 0 10px var(--bulb);line-height:1;white-space:nowrap}
+.race svg{display:block;width:100%;height:auto;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.race svg text{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700}
+.race .ln{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;transition:opacity .2s,stroke-width .2s}
+.race .glow{fill:none;stroke-width:9;opacity:.16;stroke-linecap:round;transition:opacity .2s}
+.race .hd{transition:opacity .2s;cursor:pointer}
+.race svg.dim .ln{opacity:.2}.race svg.dim .hd{opacity:.38}
+.race svg.dim .glow{opacity:0}
+.race svg.dim .on.ln,.race svg.dim .on.hd{opacity:1}
+.race svg.dim .on.ln{stroke-width:4.5}
+.race svg.dim .on.glow{opacity:.3}
+.race .ctl{display:flex;align-items:center;gap:12px;margin-top:6px}
+.race .ctl button{flex:none;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--bulb);background:rgba(255,63,164,.08);color:var(--bulb)!important;font-size:1.05rem;line-height:1;display:grid;place-items:center;transition:box-shadow .15s,background .15s}
+.race .ctl button:hover{background:rgba(255,63,164,.18);box-shadow:0 0 16px var(--bulb-glow)}
+.race input[type=range]{flex:1;min-width:0;accent-color:var(--bulb);height:28px}
+.race .hint{font-family:var(--board);font-weight:600;font-size:.95rem;color:var(--pulp-dim);letter-spacing:.02em;margin:2px 0 0}
+
+/* seat highlight across the page */
+body[data-seat] .seat-hit{color:var(--seat)!important;fill:var(--seat)!important;text-shadow:0 0 12px color-mix(in srgb,var(--seat) 55%,transparent)}
+body[data-seat] .seat-row{box-shadow:inset 3px 0 0 var(--seat);background-image:linear-gradient(90deg,var(--seat-soft),transparent 70%)}
+
+/* dock */
+.dock{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:20;max-width:calc(100vw - 20px);border:1px solid var(--hair);border-radius:999px;background:rgba(18,12,11,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 10px 40px rgba(0,0,0,.6),0 0 0 1px rgba(255,63,164,.12);overflow:hidden}
+.dock .pg{position:absolute;left:0;top:0;height:2px;width:0;background:linear-gradient(90deg,var(--bulb),var(--siren));box-shadow:0 0 8px var(--bulb)}
+.dock nav{display:flex;align-items:center;gap:2px;padding:6px;overflow-x:auto;scrollbar-width:none}
+.dock nav::-webkit-scrollbar{display:none}
+.dock a,.dock button{flex:none;font-family:var(--board);font-weight:700;font-size:1.02rem;letter-spacing:.05em;color:var(--pulp-dim);text-decoration:none;background:none;border:0;border-radius:999px;padding:8px 13px;cursor:pointer;white-space:nowrap;transition:color .15s,background .15s}
+.dock a:hover,.dock button:hover{color:var(--pulp)}
+.dock a.on{color:#160d10;background:var(--bulb-hot);box-shadow:0 0 16px var(--bulb-glow)}
+.dock button.me{color:var(--seat);border:1px solid color-mix(in srgb,var(--seat) 60%,transparent);margin-left:4px}
+
+/* release notes */
+dialog.notes{border:1px solid var(--bulb);border-radius:16px;background:#150e0d;color:var(--pulp);max-width:min(620px,calc(100vw - 28px));padding:0;box-shadow:0 0 80px var(--bulb-glow)}
+dialog.notes::backdrop{background:rgba(8,4,6,.78);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+.notes .in{padding:24px 26px 20px}
+.notes h2{font-family:var(--black);font-weight:400;font-size:2.6rem;line-height:1;margin:0 0 4px;color:var(--bulb-hot);text-shadow:0 0 12px var(--bulb),0 0 34px var(--bulb-glow)}
+.notes .by{font-family:var(--board);font-weight:600;letter-spacing:.03em;color:var(--pulp-dim);font-size:1.05rem;margin:0 0 14px}
+.notes blockquote{margin:0 0 14px;padding:11px 15px;border-radius:16px 16px 16px 4px;background:#2a2a2d;color:#fff;font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;font-size:1.02rem;line-height:1.35;max-width:34ch}
+.notes blockquote cite{display:block;font-style:normal;font-size:.8rem;color:#9a9aa0;margin-bottom:3px}
+.notes p{margin:0 0 12px;line-height:1.55}
+.notes ul{margin:0 0 14px;padding:0;list-style:none}
+.notes li{padding:8px 0 8px 0;border-top:1px solid var(--hair);line-height:1.45}
+.notes li b{font-family:var(--board);font-size:1.12rem;letter-spacing:.03em;color:var(--turf)}
+.notes .x{font:700 1.05rem var(--board);letter-spacing:.06em;color:#160d10;background:var(--bulb-hot);border:0;border-radius:999px;padding:9px 20px;cursor:pointer}
+
+@media(max-width:820px){.seats{grid-template-columns:repeat(2,minmax(0,1fr))}.bgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.band{height:150px}.race{padding:12px 10px 10px}.brief{padding:14px 14px 12px}.dock a,.dock button{padding:8px 10px;font-size:.98rem}.bx .n{font-size:1.8rem}}
+@media(prefers-reduced-motion:reduce){.seat,.race .ln,.bx .meter i{transition:none}}
+</style>
 </head>
 <body>
 <canvas id="rain" aria-hidden="true"></canvas>
@@ -449,8 +561,22 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;ma
 </header>
 <div class="band"><canvas class="citycv" aria-hidden="true"></canvas><span class="cap">The K-Vegas strip</span></div>
 <div class="wrap">
+<section id="r52" aria-label="Edition 5.2">
+<div class="ed"><span class="v">Edition 5.2</span><span>The UI/UX update Nick Sult asked for. Same audited numbers, new everything else.</span><button type="button">See what changed</button></div>
+<h2 class="seatq">Whose seat are you in?</h2>
+<p class="seatsub">Pick your team and the whole issue re-lights around it: a briefing written for you, and your name picked out in every table below.</p>
+<div class="seats"></div>
+<div class="brief" aria-live="polite"></div>
+<div class="race">
+  <div class="rh"><h2>The season, replayed</h2><span class="wkno">Week 1</span></div>
+  <p class="cap"></p>
+  <svg role="img" aria-label="League table position of all ten teams after each of the nine weeks"></svg>
+  <div class="ctl"><button type="button" aria-label="Play the season">▶</button><input type="range" min="0" max="8" step="0.01" value="0" aria-label="Week"></div>
+  <p class="hint">Drag to scrub through the table week by week. Hover a team to isolate its line; click one to take its seat.</p>
+</div>
+</section>
 
-<div class="headliners">
+<div class="headliners" id="sec-board">
 <div class="mod full mlab" data-mlab="{&quot;sigma&quot;: 20.0, &quot;games&quot;: [{&quot;fav&quot;: &quot;Tiger King Dethroned&quot;, &quot;dog&quot;: &quot;7th Floor Crew&quot;, &quot;fs&quot;: &quot;Zach&quot;, &quot;fp&quot;: 104.7, &quot;dp&quot;: 85.5}, {&quot;fav&quot;: &quot;Now I&#x27;ll Do A Lil&#x27; Tuten&quot;, &quot;dog&quot;: &quot;Bijon Frise&#x27;s&quot;, &quot;fs&quot;: &quot;Jordan&quot;, &quot;fp&quot;: 110.7, &quot;dp&quot;: 93.3}, {&quot;fav&quot;: &quot;Brought to you by Claude&quot;, &quot;dog&quot;: &quot;Zachubus&quot;, &quot;fs&quot;: &quot;Alan&quot;, &quot;fp&quot;: 101.0, &quot;dp&quot;: 92.8}, {&quot;fav&quot;: &quot;Fried Rice&quot;, &quot;dog&quot;: &quot;Country Roads Take Mahomes&quot;, &quot;fs&quot;: &quot;Nick&quot;, &quot;fp&quot;: 101.7, &quot;dp&quot;: 97.1}, {&quot;fav&quot;: &quot;MidnightCoker&quot;, &quot;dog&quot;: &quot;Nothing Too Fancy&quot;, &quot;fs&quot;: &quot;Justin&quot;, &quot;fp&quot;: 98.4, &quot;dp&quot;: 95.2}]}"><h3>Matchup lab</h3><p class="sub">Pick a Week 10 game and watch 10,000 simulated finals pile up. Each team is a ±20-point swing around its projection; the histogram is the favorite's margin, the amber line is the book's spread.</p><div class="ctl"><select class="pick"><option value="0">Tiger King Dethroned vs 7th Floor Crew</option><option value="1">Now I'll Do A Lil' Tuten vs Bijon Frise's</option><option value="2">Brought to you by Claude vs Zachubus</option><option value="3">Fried Rice vs Country Roads Take Mahomes</option><option value="4">MidnightCoker vs Nothing Too Fancy</option></select><button class="run">Run 10,000</button></div><div class="hist"><canvas width="900" height="220"></canvas></div><div class="ro"><div><b class="wp">—</b><small>favorite wins</small></div><div><b class="cv">—</b><small>covers the line</small></div><div><b class="ov">—</b><small>goes over the total</small></div><div><b class="rg">—</b><small>80% of margins</small></div></div></div>
 <div class="mod full tmap"><h3>Where the points came from</h3><p class="sub">Every point scored in the league on Sunday, by area. Each team's block splits into its three best players and everyone else. 999.55 points against a 1,002.4 projection — the closest this paper's model has come all season — and Now I'll Do A Lil' Tuten took 135.00 of it with 93.90 from three Green Bay Packers.</p><div class="scroll"><div class="tmw"><div class="tm" style="left:0.00%;top:0.00%;width:25.74%;height:52.48%;--c:#ff3b3b;--i:0" title="Now I'll Do A Lil' Tuten · 135.00"><span class="t">Jordan<small>135.00</small></span><div class="pl" style="left:0.00%;top:0.00%;width:49.85%;height:59.29%" title="Jordan Love · 39.90"><span>Love 39.9</span></div><div class="pl" style="left:0.00%;top:59.29%;width:49.85%;height:40.71%" title="Matthew Golden · 27.40"><span>Golden 27.4</span></div><div class="pl" style="left:49.85%;top:0.00%;width:50.15%;height:39.29%" title="Christian Watson · 26.60"><span>Watson 26.6</span></div><div class="pl rest" style="left:49.85%;top:39.29%;width:50.15%;height:60.71%" title="everyone else · 41.10"><span>rest 41.1</span></div></div><div class="tm" style="left:0.00%;top:52.48%;width:25.74%;height:47.52%;--c:#ffc21a;--i:1" title="Nothing Too Fancy · 122.25"><span class="t">Ian<small>122.25</small></span><div class="pl" style="left:0.00%;top:0.00%;width:41.76%;height:63.17%" title="Joe Burrow · 32.25"><span>Burrow 32.2</span></div><div class="pl" style="left:0.00%;top:63.17%;width:41.76%;height:36.83%" title="Brock Bowers · 18.80"><span>Bowers 18.8</span></div><div class="pl" style="left:41.76%;top:0.00%;width:58.24%;height:23.60%" title="Jonah Coleman · 16.80"><span>Coleman 16.8</span></div><div class="pl rest" style="left:41.76%;top:23.60%;width:58.24%;height:76.40%" title="everyone else · 54.40"><span>rest 54.4</span></div></div><div class="tm" style="left:25.74%;top:0.00%;width:21.82%;height:51.80%;--c:#4cc9f0;--i:2" title="Tiger King Dethroned · 113.00"><span class="t">Zach<small>113.00</small></span><div class="pl" style="left:0.00%;top:0.00%;width:55.41%;height:54.78%" title="Kenneth Walker III · 34.30"><span>Walker 34.3</span></div><div class="pl" style="left:55.41%;top:0.00%;width:44.59%;height:54.78%" title="Brock Purdy · 27.60"><span>Purdy 27.6</span></div><div class="pl" style="left:0.00%;top:54.78%;width:26.03%;height:45.22%" title="Rhamondre Stevenson · 13.30"></div><div class="pl rest" style="left:26.03%;top:54.78%;width:73.97%;height:45.22%" title="everyone else · 37.80"><span>rest 37.8</span></div></div><div class="tm" style="left:25.74%;top:51.80%;width:21.82%;height:48.20%;--c:#f72585;--i:3" title="7th Floor Crew · 105.15"><span class="t">Joe<small>105.15</small></span><div class="pl" style="left:0.00%;top:0.00%;width:50.91%;height:44.27%" title="Bijan Robinson · 23.70"><span>Robinson 23.7</span></div><div class="pl" style="left:50.91%;top:0.00%;width:49.09%;height:44.27%" title="Dak Prescott · 22.85"><span>Prescott 22.9</span></div><div class="pl" style="left:0.00%;top:44.27%;width:29.35%;height:55.73%" title="Luther Burden III · 17.20"></div><div class="pl rest" style="left:29.35%;top:44.27%;width:70.65%;height:55.73%" title="everyone else · 41.40"><span>rest 41.4</span></div></div><div class="tm" style="left:47.56%;top:0.00%;width:20.15%;height:51.34%;--c:#a3ff5e;--i:4" title="Country Roads Take Mahomes · 103.40"><span class="t">Patrick<small>103.40</small></span><div class="pl" style="left:0.00%;top:0.00%;width:61.69%;height:44.68%" title="CeeDee Lamb · 28.50"><span>Lamb 28.5</span></div><div class="pl" style="left:61.69%;top:0.00%;width:38.31%;height:44.68%" title="Tee Higgins · 17.70"><span>Higgins 17.7</span></div><div class="pl" style="left:0.00%;top:44.68%;width:29.20%;height:55.32%" title="James Cook III · 16.70"></div><div class="pl rest" style="left:29.20%;top:44.68%;width:70.80%;height:55.32%" title="everyone else · 40.50"><span>rest 40.5</span></div></div><div class="tm" style="left:47.56%;top:51.34%;width:20.15%;height:48.66%;--c:#3ddc84;--i:5" title="Brought to you by Claude · 98.00"><span class="t">Alan<small>98.00</small></span><div class="pl" style="left:0.00%;top:0.00%;width:55.50%;height:48.72%" title="Bucky Irving · 26.50"><span>Irving 26.5</span></div><div class="pl" style="left:55.50%;top:0.00%;width:44.50%;height:48.72%" title="Drake Maye · 21.25"><span>Maye 21.2</span></div><div class="pl" style="left:0.00%;top:48.72%;width:30.45%;height:51.28%" title="Travis Kelce · 15.30"></div><div class="pl rest" style="left:30.45%;top:48.72%;width:69.55%;height:51.28%" title="everyone else · 34.95"><span>rest 35.0</span></div></div><div class="tm" style="left:67.71%;top:0.00%;width:16.84%;height:55.72%;--c:#e0aaff;--i:6" title="Bijon Frise's · 93.80"><span class="t">Michael<small>93.80</small></span><div class="pl" style="left:0.00%;top:0.00%;width:61.81%;height:48.29%" title="Puka Nacua · 28.00"><span>Nacua 28.0</span></div><div class="pl" style="left:61.81%;top:0.00%;width:38.19%;height:48.29%" title="Jayden Daniels · 17.30"></div><div class="pl" style="left:0.00%;top:48.29%;width:34.64%;height:51.71%" title="KC Concepcion · 16.80"></div><div class="pl rest" style="left:34.64%;top:48.29%;width:65.36%;height:51.71%" title="everyone else · 31.70"><span>rest 31.7</span></div></div><div class="tm" style="left:84.55%;top:0.00%;width:15.45%;height:55.72%;--c:#8ecae6;--i:7" title="Fried Rice · 86.05"><span class="t">Nick<small>86.05</small></span><div class="pl" style="left:0.00%;top:0.00%;width:100.00%;height:30.80%" title="Ja'Marr Chase · 26.50"><span>Chase 26.5</span></div><div class="pl" style="left:0.00%;top:30.80%;width:57.27%;height:31.55%" title="Caleb Williams · 15.55"><span>Williams 15.6</span></div><div class="pl" style="left:57.27%;top:30.80%;width:42.73%;height:31.55%" title="Chuba Hubbard · 11.60"></div><div class="pl rest" style="left:0.00%;top:62.35%;width:100.00%;height:37.65%" title="everyone else · 32.40"><span>rest 32.4</span></div></div><div class="tm" style="left:67.71%;top:55.72%;width:17.85%;height:44.28%;--c:#ffd6a5;--i:8" title="Zachubus · 79.00"><span class="t">Ryan<small>79.00</small></span><div class="pl" style="left:0.00%;top:0.00%;width:53.45%;height:51.39%" title="Christian McCaffrey · 21.70"><span>McCaffrey 21.7</span></div><div class="pl" style="left:53.45%;top:0.00%;width:46.55%;height:51.39%" title="Patrick Mahomes · 18.90"><span>Mahomes 18.9</span></div><div class="pl" style="left:0.00%;top:51.39%;width:23.70%;height:48.61%" title="Zach Charbonnet · 9.10"></div><div class="pl rest" style="left:23.70%;top:51.39%;width:76.30%;height:48.61%" title="everyone else · 29.30"><span>rest 29.3</span></div></div><div class="tm" style="left:85.56%;top:55.72%;width:14.44%;height:44.28%;--c:#ff8c42;--i:9" title="MidnightCoker · 63.90"><span class="t">Justin<small>63.90</small></span><div class="pl" style="left:0.00%;top:0.00%;width:53.15%;height:44.76%" title="Josh Allen · 15.20"><span>Allen 15.2</span></div><div class="pl" style="left:53.15%;top:0.00%;width:46.85%;height:44.76%" title="Jahmyr Gibbs · 13.40"><span>Gibbs 13.4</span></div><div class="pl" style="left:0.00%;top:44.76%;width:25.50%;height:55.24%" title="Michael Wilson · 9.00"></div><div class="pl rest" style="left:25.50%;top:44.76%;width:74.50%;height:55.24%" title="everyone else · 26.30"><span>rest 26.3</span></div></div></div></div><div class="swipe">swipe →</div></div>
 <div class="mod full board"><h3>The board · final</h3><p class="sub">Final Week 9 scores. Green won. Five teams cleared 100 and three finished under 90, and nine of the ten scored less than they did in Week 8. There was no Sunday-night read this week, so the comeback and replay modules sit this issue out.</p><div class="r lead"><div class="nm">Now I'll Do A Lil' Tuten<small>done</small></div><div class="trk"><div class="bar" style="width:98.0%"></div></div><div class="pts">135.00</div><div class="pj"><span class="wl">W</span></div></div><div class="r lead"><div class="nm">Nothing Too Fancy<small>done</small></div><div class="trk"><div class="bar" style="width:88.8%"></div></div><div class="pts">122.25</div><div class="pj"><span class="wl">W</span></div></div><div class="r lead"><div class="nm">Tiger King Dethroned<small>done</small></div><div class="trk"><div class="bar" style="width:82.1%"></div></div><div class="pts">113.00</div><div class="pj"><span class="wl">W</span></div></div><div class="r lead"><div class="nm">7th Floor Crew<small>done</small></div><div class="trk"><div class="bar" style="width:76.4%"></div></div><div class="pts">105.15</div><div class="pj"><span class="wl">W</span></div></div><div class="r trail"><div class="nm">Country Roads Take Mahomes<small>done</small></div><div class="trk"><div class="bar" style="width:75.1%"></div></div><div class="pts">103.40</div><div class="pj"><span class="wl l">L</span></div></div><div class="r trail"><div class="nm">Brought to you by Claude<small>done</small></div><div class="trk"><div class="bar" style="width:71.2%"></div></div><div class="pts">98.00</div><div class="pj"><span class="wl l">L</span></div></div><div class="r lead"><div class="nm">Bijon Frise's<small>done</small></div><div class="trk"><div class="bar" style="width:68.1%"></div></div><div class="pts">93.80</div><div class="pj"><span class="wl">W</span></div></div><div class="r trail"><div class="nm">Fried Rice<small>done</small></div><div class="trk"><div class="bar" style="width:62.5%"></div></div><div class="pts">86.05</div><div class="pj"><span class="wl l">L</span></div></div><div class="r trail"><div class="nm">Zachubus<small>done</small></div><div class="trk"><div class="bar" style="width:57.4%"></div></div><div class="pts">79.00</div><div class="pj"><span class="wl l">L</span></div></div><div class="r trail"><div class="nm">MidnightCoker<small>done</small></div><div class="trk"><div class="bar" style="width:46.4%"></div></div><div class="pts">63.90</div><div class="pj"><span class="wl l">L</span></div></div></div>
@@ -459,7 +585,7 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;ma
 <div class="mod lines"><h3>Top lines · Week 9</h3><p class="sub">The twelve best individual scores of the week. Jordan Love's 39.9 is the biggest line since Joe Burrow's 44.10 seven days ago, and three of the top eight belong to one team.</p><div class="r"><div class="k">1</div><div class="p">Jordan Love<small>Now I'll Do A Lil' Tuten</small></div><div class="trk"><div class="bar" style="width:100.0%"></div></div><div class="pts">39.90</div></div><div class="r"><div class="k">2</div><div class="p">Kenneth Walker III<small>Tiger King Dethroned</small></div><div class="trk"><div class="bar" style="width:86.0%"></div></div><div class="pts">34.30</div></div><div class="r"><div class="k">3</div><div class="p">Joe Burrow<small>Nothing Too Fancy</small></div><div class="trk"><div class="bar" style="width:80.8%"></div></div><div class="pts">32.25</div></div><div class="r"><div class="k">4</div><div class="p">CeeDee Lamb<small>Country Roads Take Mahomes</small></div><div class="trk"><div class="bar" style="width:71.4%"></div></div><div class="pts">28.50</div></div><div class="r"><div class="k">5</div><div class="p">Puka Nacua<small>Bijon Frise's</small></div><div class="trk"><div class="bar" style="width:70.2%"></div></div><div class="pts">28.00</div></div><div class="r"><div class="k">6</div><div class="p">Brock Purdy<small>Tiger King Dethroned</small></div><div class="trk"><div class="bar" style="width:69.2%"></div></div><div class="pts">27.60</div></div><div class="r"><div class="k">7</div><div class="p">Matthew Golden<small>Now I'll Do A Lil' Tuten</small></div><div class="trk"><div class="bar" style="width:68.7%"></div></div><div class="pts">27.40</div></div><div class="r"><div class="k">8</div><div class="p">Christian Watson<small>Now I'll Do A Lil' Tuten</small></div><div class="trk"><div class="bar" style="width:66.7%"></div></div><div class="pts">26.60</div></div><div class="r"><div class="k">9</div><div class="p">Ja'Marr Chase<small>Fried Rice</small></div><div class="trk"><div class="bar" style="width:66.4%"></div></div><div class="pts">26.50</div></div><div class="r"><div class="k">10</div><div class="p">Bucky Irving<small>Brought to you by Claude</small></div><div class="trk"><div class="bar" style="width:66.4%"></div></div><div class="pts">26.50</div></div><div class="r"><div class="k">11</div><div class="p">Bijan Robinson<small>7th Floor Crew</small></div><div class="trk"><div class="bar" style="width:59.4%"></div></div><div class="pts">23.70</div></div><div class="r"><div class="k">12</div><div class="p">Dak Prescott<small>7th Floor Crew</small></div><div class="trk"><div class="bar" style="width:57.3%"></div></div><div class="pts">22.85</div></div></div>
 </div>
 
-<div class="sechead"><b>The Ledger</b> · what ESPN doesn't tell you</div>
+<div class="sechead" id="sec-ledger"><b>The Ledger</b> what ESPN doesn't tell you</div>
 
 <div class="headliners">
 <div class="mod luck multi"><h3>Luck index · season</h3><p class="sub">Actual wins against the wins the all-play record says each team should have. Nothing Too Fancy is 7-2 on a 47-34 all-play for a +1.78; Zachubus is 3-6 on 19-62 and still ahead of where it deserves to be.</p><div class="r lucky"><div class="nm">Nothing Too Fancy<small>all-play 47-34</small></div><div class="trk"><div class="bar" style="width:58.0%"></div></div><div class="wl">7-2</div><div class="lk">+1.78</div></div><div class="r lucky"><div class="nm">Zachubus<small>all-play 19-62</small></div><div class="trk"><div class="bar" style="width:23.5%"></div></div><div class="wl">3-6</div><div class="lk">+0.89</div></div><div class="r even"><div class="nm">Tiger King Dethroned<small>all-play 44-37</small></div><div class="trk"><div class="bar" style="width:54.3%"></div></div><div class="wl">5-4</div><div class="lk">+0.11</div></div><div class="r even"><div class="nm">Brought to you by Claude<small>all-play 45-36</small></div><div class="trk"><div class="bar" style="width:55.6%"></div></div><div class="wl">5-4</div><div class="lk">+0.00</div></div><div class="r unlucky"><div class="nm">Now I'll Do A Lil' Tuten<small>all-play 56-25</small></div><div class="trk"><div class="bar" style="width:69.1%"></div></div><div class="wl">6-3</div><div class="lk">−0.22</div></div><div class="r unlucky"><div class="nm">7th Floor Crew<small>all-play 47-34</small></div><div class="trk"><div class="bar" style="width:58.0%"></div></div><div class="wl">5-4</div><div class="lk">−0.22</div></div><div class="r unlucky"><div class="nm">Fried Rice<small>all-play 38-43</small></div><div class="trk"><div class="bar" style="width:46.9%"></div></div><div class="wl">4-5</div><div class="lk">−0.22</div></div><div class="r unlucky"><div class="nm">MidnightCoker<small>all-play 32-49</small></div><div class="trk"><div class="bar" style="width:39.5%"></div></div><div class="wl">3-6</div><div class="lk">−0.56</div></div><div class="r unlucky"><div class="nm">Country Roads Take Mahomes<small>all-play 42-39</small></div><div class="trk"><div class="bar" style="width:51.9%"></div></div><div class="wl">4-5</div><div class="lk">−0.67</div></div><div class="r unlucky"><div class="nm">Bijon Frise's<small>all-play 34-47</small></div><div class="trk"><div class="bar" style="width:42.0%"></div></div><div class="wl">3-6</div><div class="lk">−0.78</div></div></div>
@@ -473,7 +599,7 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;ma
 <div class="mod full wire"><h3>The wire</h3><p class="sub">Three transactions in eight days — the quietest week this league has had and fewer than half of last week, which was itself a record. Seven of the ten teams did nothing at all, and the one move that mattered put a man signed on Sunday morning ahead of Saquon Barkley.</p><div class="cols one"><div><h4>Moves this week</h4><div class="r"><div class="p">Fried Rice</div><div class="trk"><div class="bar g" style="width:100.0%"></div></div><div class="pts g">1</div></div><div class="r"><div class="p">Country Roads Take Mahomes</div><div class="trk"><div class="bar g" style="width:100.0%"></div></div><div class="pts g">1</div></div><div class="r"><div class="p">Nothing Too Fancy</div><div class="trk"><div class="bar g" style="width:100.0%"></div></div><div class="pts g">1</div></div><div class="r"><div class="p">Now I'll Do A Lil' Tuten</div><div class="trk"><div class="bar g" style="width:0.0%"></div></div><div class="pts g">0</div></div><div class="r"><div class="p">Brought to you by Claude</div><div class="trk"><div class="bar g" style="width:0.0%"></div></div><div class="pts g">0</div></div><div class="r"><div class="p">Tiger King Dethroned</div><div class="trk"><div class="bar g" style="width:0.0%"></div></div><div class="pts g">0</div></div><div class="r"><div class="p">7th Floor Crew</div><div class="trk"><div class="bar g" style="width:0.0%"></div></div><div class="pts g">0</div></div><div class="r"><div class="p">MidnightCoker</div><div class="trk"><div class="bar g" style="width:0.0%"></div></div><div class="pts g">0</div></div><div class="r"><div class="p">Bijon Frise's</div><div class="trk"><div class="bar g" style="width:0.0%"></div></div><div class="pts g">0</div></div><div class="r"><div class="p">Zachubus</div><div class="trk"><div class="bar g" style="width:0.0%"></div></div><div class="pts g">0</div></div></div></div><details><summary>Full log</summary><div class="log"><div class="lg"><span class="d">Sun Nov 8</span><span class="t">Fried Rice</span><span class="x">signed Devin Singletary at 9:57 am — and started him at running back ahead of Saquon Barkley</span></div><div class="lg"><span class="d">Sat Nov 7</span><span class="t">Country Roads Take Mahomes</span><span class="x">Chig Okonkwo in for Bam Knight; Okonkwo starts at tight end on Sunday</span></div><div class="lg"><span class="d">Thu Nov 5</span><span class="t">Nothing Too Fancy</span><span class="x">Mike Washington Jr. in off waivers, Ja'Kobi Lane out — six days after Lane was signed</span></div></div></details></div>
 </div>
 
-<div class="sechead"><b>The Lab</b> · live models, running in your browser</div>
+<div class="sechead" id="sec-lab"><b>The Lab</b> live models, running in your browser</div>
 
 <div class="headliners">
 <div class="mod full labsim" data-sim="{&quot;teams&quot;: [{&quot;tag&quot;: &quot;Ian&quot;, &quot;name&quot;: &quot;Nothing Too Fancy&quot;, &quot;pts&quot;: 979.55, &quot;avg&quot;: 108.83888888888889, &quot;w&quot;: 7, &quot;l&quot;: 2, &quot;color&quot;: &quot;#ffc21a&quot;}, {&quot;tag&quot;: &quot;Jordan&quot;, &quot;name&quot;: &quot;Now I&#x27;ll Do A Lil&#x27; Tuten&quot;, &quot;pts&quot;: 1051.55, &quot;avg&quot;: 116.83888888888889, &quot;w&quot;: 6, &quot;l&quot;: 3, &quot;color&quot;: &quot;#ff3b3b&quot;}, {&quot;tag&quot;: &quot;Joe&quot;, &quot;name&quot;: &quot;7th Floor Crew&quot;, &quot;pts&quot;: 972.35, &quot;avg&quot;: 108.03888888888889, &quot;w&quot;: 5, &quot;l&quot;: 4, &quot;color&quot;: &quot;#f72585&quot;}, {&quot;tag&quot;: &quot;Alan&quot;, &quot;name&quot;: &quot;Brought to you by Claude&quot;, &quot;pts&quot;: 951.3, &quot;avg&quot;: 105.69999999999999, &quot;w&quot;: 5, &quot;l&quot;: 4, &quot;color&quot;: &quot;#3ddc84&quot;}, {&quot;tag&quot;: &quot;Zach&quot;, &quot;name&quot;: &quot;Tiger King Dethroned&quot;, &quot;pts&quot;: 922.4, &quot;avg&quot;: 102.48888888888888, &quot;w&quot;: 5, &quot;l&quot;: 4, &quot;color&quot;: &quot;#4cc9f0&quot;}, {&quot;tag&quot;: &quot;Patrick&quot;, &quot;name&quot;: &quot;Country Roads Take Mahomes&quot;, &quot;pts&quot;: 944.25, &quot;avg&quot;: 104.91666666666667, &quot;w&quot;: 4, &quot;l&quot;: 5, &quot;color&quot;: &quot;#a3ff5e&quot;}, {&quot;tag&quot;: &quot;Nick&quot;, &quot;name&quot;: &quot;Fried Rice&quot;, &quot;pts&quot;: 877.75, &quot;avg&quot;: 97.52777777777777, &quot;w&quot;: 4, &quot;l&quot;: 5, &quot;color&quot;: &quot;#8ecae6&quot;}, {&quot;tag&quot;: &quot;Michael&quot;, &quot;name&quot;: &quot;Bijon Frise&#x27;s&quot;, &quot;pts&quot;: 893.5, &quot;avg&quot;: 99.27777777777777, &quot;w&quot;: 3, &quot;l&quot;: 6, &quot;color&quot;: &quot;#e0aaff&quot;}, {&quot;tag&quot;: &quot;Justin&quot;, &quot;name&quot;: &quot;MidnightCoker&quot;, &quot;pts&quot;: 879.8, &quot;avg&quot;: 97.75555555555555, &quot;w&quot;: 3, &quot;l&quot;: 6, &quot;color&quot;: &quot;#ff8c42&quot;}, {&quot;tag&quot;: &quot;Ryan&quot;, &quot;name&quot;: &quot;Zachubus&quot;, &quot;pts&quot;: 773.0, &quot;avg&quot;: 85.88888888888889, &quot;w&quot;: 3, &quot;l&quot;: 6, &quot;color&quot;: &quot;#ffd6a5&quot;}], &quot;spots&quot;: 6, &quot;weeks&quot;: 6, &quot;sigma&quot;: 20.0, &quot;shrink&quot;: 0.6, &quot;seasons&quot;: 3000, &quot;sched&quot;: [[[0, 7], [1, 5], [2, 9], [3, 4], [6, 8]]]}"><h3>Playoff odds machine <em class="ctr">0 / 3,000 seasons</em></h3><p class="sub">Three thousand simulated rest-of-seasons, run live in your browser. Six of ten make the playoffs, and five weeks remain. Week 10's real pairings are played first; after that the schedule is drawn at random, because ESPN has not given us the rest of it.</p><div class="hd"><span></span><span></span><span>Playoffs</span><span>Top seed</span><span>Avg wins</span></div><div class="r" data-i="0"><div class="nm"><i style="background:#ffc21a"></i>Nothing Too Fancy<small>Ian · 7-2</small></div><div class="trk"><div class="bar" style="width:0%"></div></div><div class="pct">—</div><div class="seed">—</div><div class="wins">—</div></div><div class="r" data-i="1"><div class="nm"><i style="background:#ff3b3b"></i>Now I'll Do A Lil' Tuten<small>Jordan · 6-3</small></div><div class="trk"><div class="bar" style="width:0%"></div></div><div class="pct">—</div><div class="seed">—</div><div class="wins">—</div></div><div class="r" data-i="2"><div class="nm"><i style="background:#f72585"></i>7th Floor Crew<small>Joe · 5-4</small></div><div class="trk"><div class="bar" style="width:0%"></div></div><div class="pct">—</div><div class="seed">—</div><div class="wins">—</div></div><div class="r" data-i="3"><div class="nm"><i style="background:#3ddc84"></i>Brought to you by Claude<small>Alan · 5-4</small></div><div class="trk"><div class="bar" style="width:0%"></div></div><div class="pct">—</div><div class="seed">—</div><div class="wins">—</div></div><div class="r" data-i="4"><div class="nm"><i style="background:#4cc9f0"></i>Tiger King Dethroned<small>Zach · 5-4</small></div><div class="trk"><div class="bar" style="width:0%"></div></div><div class="pct">—</div><div class="seed">—</div><div class="wins">—</div></div><div class="r" data-i="5"><div class="nm"><i style="background:#a3ff5e"></i>Country Roads Take Mahomes<small>Patrick · 4-5</small></div><div class="trk"><div class="bar" style="width:0%"></div></div><div class="pct">—</div><div class="seed">—</div><div class="wins">—</div></div><div class="r" data-i="6"><div class="nm"><i style="background:#8ecae6"></i>Fried Rice<small>Nick · 4-5</small></div><div class="trk"><div class="bar" style="width:0%"></div></div><div class="pct">—</div><div class="seed">—</div><div class="wins">—</div></div><div class="r" data-i="7"><div class="nm"><i style="background:#e0aaff"></i>Bijon Frise's<small>Michael · 3-6</small></div><div class="trk"><div class="bar" style="width:0%"></div></div><div class="pct">—</div><div class="seed">—</div><div class="wins">—</div></div><div class="r" data-i="8"><div class="nm"><i style="background:#ff8c42"></i>MidnightCoker<small>Justin · 3-6</small></div><div class="trk"><div class="bar" style="width:0%"></div></div><div class="pct">—</div><div class="seed">—</div><div class="wins">—</div></div><div class="r" data-i="9"><div class="nm"><i style="background:#ffd6a5"></i>Zachubus<small>Ryan · 3-6</small></div><div class="trk"><div class="bar" style="width:0%"></div></div><div class="pct">—</div><div class="seed">—</div><div class="wins">—</div></div><div class="ctl"><button class="run">Run it again</button><span class="note">Week 10's real pairings seed every season. Everything after that is random.</span></div></div>
@@ -482,7 +608,7 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;ma
 <div class="mod full stand bookrev"><h3>How the book did <em>W9: 2-3 SU · 1-4 ATS · season 24-16, 16-24</em></h3><p class="sub">Last Tuesday's lines, graded. Four of the five went over the total, the fifth went under it by 58.40, and the 24.5-point line on the game of the week was beaten by a quarter of a point in the editor's favour, which did him no good whatsoever.</p><div class="scroll"><table><thead><tr><th>Line</th><th>Result</th><th class="n">SU</th><th class="n">ATS</th><th class="n">Total</th><th class="n">Actual</th></tr></thead><tbody><tr><td class="tm">Lil' Tuten −12.0<small>vs Fried Rice</small></td><td>135.00–86.05</td><td class="n"><b class="ok">✓</b></td><td class="n"><b class="ok">✓</b></td><td class="n dim">215.4</td><td class="n">221.05 <b class='ov'>O</b></td></tr><tr><td class="tm">Nothing Too Fancy −24.5<small>vs Brought to you by Claude</small></td><td>122.25–98.00</td><td class="n"><b class="ok">✓</b></td><td class="n"><b class="no">✗</b></td><td class="n dim">204.5</td><td class="n">220.25 <b class='ov'>O</b></td></tr><tr><td class="tm">Country Roads −1.1<small>vs Tiger King</small></td><td>103.40–113.00</td><td class="n"><b class="no">✗</b></td><td class="n"><b class="no">✗</b></td><td class="n dim">187.1</td><td class="n">216.40 <b class='ov'>O</b></td></tr><tr><td class="tm">Zachubus −4.5<small>vs 7th Floor Crew</small></td><td>79.00–105.15</td><td class="n"><b class="no">✗</b></td><td class="n"><b class="no">✗</b></td><td class="n dim">179.3</td><td class="n">184.15 <b class='ov'>O</b></td></tr><tr><td class="tm">MidnightCoker −5.5<small>vs Bijon Frise's</small></td><td>63.90–93.80</td><td class="n"><b class="no">✗</b></td><td class="n"><b class="no">✗</b></td><td class="n dim">216.1</td><td class="n">157.70 <b class='un'>U</b></td></tr></tbody></table></div><div class="swipe">swipe →</div></div>
 </div>
 
-<div class="sechead"><b>Week 9</b> · Finals</div>
+<div class="sechead" id="sec-finals"><b>Week 9</b> Finals</div>
 <div class="games"><div class="game"><span class="st final">FINAL</span><div class="row lead"><div class="nm">Nothing Too Fancy<small>Ian · 7-2</small></div><div class="pts">122.25</div></div><div class="row trail"><div class="nm">Brought to you by Claude<small>Alan · 5-4</small></div><div class="pts">98.00</div></div><div class="foot"><b>122.25 to 98.00. First place beat the editor by 24.25 against a line of 24.5</b>, so this paper lost the game and won the bet by a quarter of a point, which is the narrowest margin of consolation available. Burrow 32.25 and Bowers 18.8 for Ian, who is now 7-2 and two games clear with the fewest points conceded in the league.</div></div><div class="game"><span class="st final">FINAL</span><div class="row lead"><div class="nm">Now I'll Do A Lil' Tuten<small>Jordan · 6-3</small></div><div class="pts">135.00</div></div><div class="row trail"><div class="nm">Fried Rice<small>Nick · 4-5</small></div><div class="pts">86.05</div></div><div class="foot"><b>Jordan Love 39.9, the biggest line of the week</b>, with Matthew Golden 27.4 and Christian Watson 26.6 behind it — 93.90 from three Packers. 135.00 to 86.05, and Now I'll Do A Lil' Tuten has <b>1,051.55 points for the season, the first thousand anybody in this league has reached</b>. Fried Rice won by 78.90 last Sunday and lost by 48.95 this one.</div></div><div class="game"><span class="st final">FINAL</span><div class="row lead"><div class="nm">Tiger King Dethroned<small>Zach · 5-4</small></div><div class="pts">113.00</div></div><div class="row trail"><div class="nm">Country Roads Take Mahomes<small>Patrick · 4-5</small></div><div class="pts">103.40</div></div><div class="foot"><b>56.60 last week, 113.00 this one.</b> Tiger King Dethroned was the only team in the league to score more than it did in Week 8, and it doubled. Walker III 34.3, Purdy 27.6. Country Roads had Lamb on 28.5 and lost by 9.60 — our book had Patrick by 1.1.</div></div><div class="game"><span class="st final">FINAL</span><div class="row lead"><div class="nm">Bijon Frise's<small>Michael · 3-6</small></div><div class="pts">93.80</div></div><div class="row trail"><div class="nm">MidnightCoker<small>Justin · 3-6</small></div><div class="pts">63.90</div></div><div class="foot">93.80 to <b>63.90</b>, the lowest number MidnightCoker has posted all season and the fifth-lowest in league history. Josh Allen led Justin with 15.2. Nacua 28.0 and Jayden Daniels 17.3 for Bijon Frise's, who is 3-6 with 1,021.40 points conceded — a league record by 34.90, and both of those players are benched for Sunday.</div></div><div class="game"><span class="st final">FINAL</span><div class="row lead"><div class="nm">7th Floor Crew<small>Joe · 5-4</small></div><div class="pts">105.15</div></div><div class="row trail"><div class="nm">Zachubus<small>Ryan · 3-6</small></div><div class="pts">79.00</div></div><div class="foot">105.15 to 79.00. Bijan Robinson 23.7 and Prescott 22.85 for 7th Floor, who is 5-4 and third on a 47-34 all-play. Zachubus got 21.7 from Christian McCaffrey — correctly started this time — 18.9 from Mahomes and 38.40 from the other seven. Ryan is 19-62 against the field.</div></div></div>
 
 <div class="hits">
@@ -506,7 +632,7 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;ma
   <p>The league projected 1,002.4 for Week 9 and scored 999.55, which is the closest this page's number has come all year and will not be mentioned again until it misses. Three transactions in eight days, seven teams doing nothing at all, six of the ten still without a defense, five weeks left, and every single team in the competition inside two games of a playoff place.</p>
 </div>
 
-<div class="sechead"><b>Week 10</b> · Outlook</div>
+<div class="sechead" id="sec-next"><b>Week 10</b> Outlook</div>
 
 <div class="mod full book"><h3>The book <em>record 24-16 SU · 16-24 ATS</em></h3><p class="sub">Our Week 10 lines, from ESPN's projections and a ±20-point swing per team. Win probability is the favourite's. Two of the five are inside 5 points, and the shortest of them has a 3-6 team favoured over the 7-2 team at the top. Graded next Tuesday, in public, as usual.</p><div class="r"><div class="m">Tiger King Dethroned<small>vs 7th Floor Crew</small></div><div class="ln">Zach −19.2<small>O/U 190.2</small></div><div class="wp"><div class="f" style="width:75.1%"><span>75%</span></div><div class="d"><span>25%</span></div></div></div><div class="r"><div class="m">Now I'll Do A Lil' Tuten<small>vs Bijon Frise's</small></div><div class="ln">Jordan −17.4<small>O/U 204.0</small></div><div class="wp"><div class="f" style="width:73.1%"><span>73%</span></div><div class="d"><span>27%</span></div></div></div><div class="r"><div class="m">Brought to you by Claude<small>vs Zachubus</small></div><div class="ln">Alan −8.2<small>O/U 193.8</small></div><div class="wp"><div class="f" style="width:61.4%"><span>61%</span></div><div class="d"><span>39%</span></div></div></div><div class="r"><div class="m">Fried Rice<small>vs Country Roads Take Mahomes</small></div><div class="ln">Nick −4.6<small>O/U 198.8</small></div><div class="wp"><div class="f" style="width:56.5%"><span>56%</span></div><div class="d"><span>44%</span></div></div></div><div class="r"><div class="m">MidnightCoker<small>vs Nothing Too Fancy</small></div><div class="ln">Justin −3.2<small>O/U 193.6</small></div><div class="wp"><div class="f" style="width:54.5%"><span>55%</span></div><div class="d"><span>45%</span></div></div></div></div>
 
@@ -742,6 +868,206 @@ footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;ma
       for(var i=0;i<balls.length;i++){var b=balls[i];b.y+=b.v;b.a+=b.w;b.x+=Math.sin(b.y*.01)*.15;if(b.y-b.r*2>H)balls[i]=mk(-20);ball(balls[i])}
       requestAnimationFrame(loop)})();
   }
+})();
+</script>
+<div class="dock"><i class="pg"></i><nav aria-label="Jump to section">
+<a href="#r52">Season</a><a href="#sec-board">Week 9</a><a href="#sec-ledger">Ledger</a><a href="#sec-lab">Lab</a><a href="#sec-finals">Finals</a><a href="#sec-next">Week 10</a>
+<button type="button" class="me">Pick your seat</button></nav></div>
+<dialog class="notes" aria-labelledby="r52nt"><div class="in">
+<h2 id="r52nt">The Racket 5.2</h2>
+<p class="by">Release notes, Tuesday, November 10</p>
+<blockquote><cite>Nick Sult</cite>10/10 no training needed. But we should all expect a UI/UX update with claude 5.2 out now, no?</blockquote>
+<p>Both halves of that review have been taken seriously. This is the update.</p>
+<ul>
+<li><b>Pick your seat.</b> Choose your team at the top and the issue reorganises around it. Your link remembers you: send someone <i>week9-recap.html#nick</i> and it opens in Nick's seat.</li>
+<li><b>Your briefing.</b> Table position, record against the whole league, live playoff odds from 3,000 simulated seasons, Sunday's line, and what the lineup check thinks of your roster. It is not always kind.</li>
+<li><b>The season, replayed.</b> Nine weeks of the league table as a race you can play, pause and drag through.</li>
+<li><b>Your name in lights.</b> Every table, chart and ranking below picks out your team in its own color.</li>
+<li><b>The dock.</b> Jump between sections from the bottom of the screen, with a reading bar so you know how much abuse is left.</li>
+</ul>
+<p>Unchanged: every number still reconciles against ESPN before this page is allowed to build, and Saquon Barkley is still on Nick's bench.</p>
+<button type="button" class="x">Back to the paper</button>
+</div></dialog>
+<script>window.R52={"teams": [{"tag": "Jordan", "name": "Now I'll Do A Lil' Tuten", "color": "#ff3b3b", "rank": 2, "rec": "6-3", "pf": 1051.55, "pa": 863.75, "ap": "56-25", "luck": -0.22, "prank": 1, "pmove": 0, "prate": 85.0, "scores": [145.5, 68.5, 73.35, 109.65, 134.55, 134.7, 107.1, 143.2, 135.0], "res": ["W", "L", "L", "W", "W", "W", "L", "W", "W"], "ranks": [1, 5, 8, 8, 5, 1, 2, 2, 2], "hi": 145.5, "hiw": 1, "lo": 68.5, "low": 2, "next": {"opp": "Bijon Frise's", "proj": 110.7, "oproj": 93.3, "fav": true, "line": 17.4, "wp": 73, "left": 8}, "lc": {"sev": "amber", "note": "<b>Malik Nabers is finally in the lineup<\/b>, which this column asked for four weeks running — and D'Andre Swift, who scored 26.9 in Week 8, has taken his place on the bench. C.J. Stroud and Dalton Kincaid are behind Love and Kraft, correctly. No defense for a fourth week. Eight active, 110.7 projected, the best on the board."}, "lede": "You have <b>1,051.55 points<\/b>, the first thousand this league has seen, and a 56-25 all-play that is the best in it by nine games. You are second. The fixture list owes you an apology, and D'Andre Swift is on your bench."}, {"tag": "Ian", "name": "Nothing Too Fancy", "color": "#ffc21a", "rank": 1, "rec": "7-2", "pf": 979.55, "pa": 813.05, "ap": "47-34", "luck": 1.78, "prank": 2, "pmove": 1, "prate": 75.2, "scores": [135.15, 108.95, 91.7, 98.7, 113.9, 70.8, 107.7, 130.4, 122.25], "res": ["W", "W", "W", "L", "W", "L", "W", "W", "W"], "ranks": [2, 1, 1, 2, 1, 2, 1, 1, 1], "hi": 135.15, "hiw": 1, "lo": 70.8, "low": 6, "next": {"opp": "MidnightCoker", "proj": 95.2, "oproj": 98.4, "fav": false, "line": 3.2, "wp": 45, "left": 8}, "lc": {"sev": "amber", "note": "<b>Seventh straight week with the D/ST slot empty<\/b>, and J.K. Dobbins and Dallas Goedert are both on the bench. Eight active and 95.2 projected — first place has the fourth-lowest projection in the league and is an underdog in our book. De'Zhaun Stribling, signed on November 1, is already on IR."}, "lede": "<b>7-2 and two clear<\/b>, with the fewest points conceded in the league. The all-play says 47-34, so the schedule is carrying about a game and three quarters of that, and our book has you as an underdog to a 3-6 team on Sunday. You have not fielded a defense since October 11."}, {"tag": "Alan", "name": "Brought to you by Claude", "color": "#3ddc84", "rank": 4, "rec": "5-4", "pf": 951.3, "pa": 972.65, "ap": "45-36", "luck": 0.0, "prank": 4, "pmove": 0, "prate": 68.3, "scores": [134.05, 107.65, 118.9, 68.65, 127.35, 81.8, 99.35, 115.55, 98.0], "res": ["W", "L", "W", "L", "W", "L", "W", "W", "L"], "ranks": [3, 4, 2, 6, 3, 4, 5, 3, 4], "hi": 134.05, "hiw": 1, "lo": 68.65, "low": 4, "next": {"opp": "Zachubus", "proj": 101.0, "oproj": 92.8, "fav": true, "line": 8.2, "wp": 61, "left": 9}, "lc": {"sev": "amber", "note": "<b>Nine active with a defense in the slot<\/b> — one of four in the league — and DK Metcalf is on the bench behind a questionable Xavier Worthy, with Rico Dowdle behind Woody Marks. The editor also has an empty bench slot and has just lost by 24.25. Make of the arrangement what you like."}, "lede": "You lost by 24.25 against a 24.5-point line, so you <b>covered by a quarter of a point<\/b> and lost anyway. 951.30 scored, 972.65 conceded: the differential is negative for the first time this season. You also write this paper, so nobody is going to say it more gently."}, {"tag": "Zach", "name": "Tiger King Dethroned", "color": "#4cc9f0", "rank": 5, "rec": "5-4", "pf": 922.4, "pa": 984.35, "ap": "44-37", "luck": 0.11, "prank": 7, "pmove": 1, "prate": 61.0, "scores": [133.7, 108.05, 95.7, 123.0, 75.65, 97.3, 119.4, 56.6, 113.0], "res": ["W", "W", "L", "L", "L", "W", "W", "L", "W"], "ranks": [4, 2, 3, 4, 7, 5, 4, 6, 5], "hi": 133.7, "hiw": 1, "lo": 56.6, "low": 8, "next": {"opp": "7th Floor Crew", "proj": 104.7, "oproj": 85.5, "fav": true, "line": 19.2, "wp": 75, "left": 8}, "lc": {"sev": "amber", "note": "<b>A tenth consecutive week with no defense<\/b>, and Rhamondre Stevenson is doubtful in the FLEX with Rome Odunze and Khalil Shakir on the bench. Lamar Jackson has at last been moved to IR, which is this column's one win of the season. Eight active, 104.70 projected, and 113.00 on Sunday after the 56.60."}, "lede": "56.60 one week, <b>113.00<\/b> the next: the only team in the league that scored more than it did in Week 8. You are 5-4 and fifth with more points against than for, and you have now gone ten straight weeks without a defense."}, {"tag": "Joe", "name": "7th Floor Crew", "color": "#f72585", "rank": 3, "rec": "5-4", "pf": 972.35, "pa": 928.35, "ap": "47-34", "luck": -0.22, "prank": 3, "pmove": -1, "prate": 70.3, "scores": [114.15, 88.75, 113.5, 89.95, 113.9, 91.8, 143.6, 111.55, 105.15], "res": ["L", "W", "W", "L", "L", "W", "W", "L", "W"], "ranks": [6, 6, 5, 7, 8, 7, 3, 4, 3], "hi": 143.6, "hiw": 7, "lo": 88.75, "low": 2, "next": {"opp": "Tiger King Dethroned", "proj": 85.5, "oproj": 104.7, "fav": false, "line": 19.2, "wp": 25, "left": 8}, "lc": {"sev": "amber", "note": "<b>Tony Pollard is on the bench again<\/b> — two 27.2s in the last four weeks — behind Jakobi Meyers and Isaiah Likely. George Pickens, Carnell Tate and Tyjae Spears all questionable on the bench, Kyler Murray doubtful, and no defense. Eight active and 85.5 projected, the lowest number on the board."}, "lede": "<b>5-4 and third<\/b> on a 47-34 all-play, which is level with the team in first. You also have the lowest projection on the board for Sunday and Tony Pollard on your bench again, and this page suspects those two facts are related."}, {"tag": "Justin", "name": "MidnightCoker", "color": "#ff8c42", "rank": 9, "rec": "3-6", "pf": 879.8, "pa": 956.3, "ap": "32-49", "luck": -0.56, "prank": 9, "pmove": 0, "prate": 54.4, "scores": [100.9, 128.7, 101.4, 122.05, 103.95, 72.35, 80.9, 105.65, 63.9], "res": ["L", "L", "W", "W", "W", "L", "L", "L", "L"], "ranks": [7, 8, 7, 5, 2, 6, 7, 8, 9], "hi": 128.7, "hiw": 2, "lo": 63.9, "low": 9, "next": {"opp": "Nothing Too Fancy", "proj": 98.4, "oproj": 95.2, "fav": true, "line": 3.2, "wp": 55, "left": 7}, "lc": {"sev": "red", "note": "<b>Michael Wilson is on IR and sitting in a starting receiver slot<\/b>, which makes seven active men. DeVonta Smith is out and Treylon Burks questionable on the bench, Aaron Rodgers is on the bench behind Josh Allen (correctly), and the D/ST slot is empty again. This team scored 63.90 on Sunday and our book has it favoured over first place."}, "lede": "<b>63.90<\/b>, your lowest score of the season and the fifth-lowest this league has recorded. There is a receiver on IR in one of your starting slots. Our book still makes you a 3.2-point favourite over first place on Sunday, and stands by it."}, {"tag": "Patrick", "name": "Country Roads Take Mahomes", "color": "#a3ff5e", "rank": 6, "rec": "4-5", "pf": 944.25, "pa": 849.85, "ap": "42-39", "luck": -0.67, "prank": 5, "pmove": 1, "prate": 66.4, "scores": [97.65, 122.5, 100.85, 135.55, 93.85, 92.85, 90.05, 107.55, 103.4], "res": ["W", "W", "L", "W", "L", "L", "L", "W", "L"], "ranks": [5, 3, 4, 1, 4, 3, 6, 5, 6], "hi": 135.55, "hiw": 4, "lo": 90.05, "low": 7, "next": {"opp": "Fried Rice", "proj": 97.1, "oproj": 101.7, "fav": false, "line": 4.6, "wp": 44, "left": 8}, "lc": {"sev": "amber", "note": "<b>Jared Goff is in the QB slot and Kirk Cousins is on the bench<\/b>, which reverses a fortnight of argument on this page. Chig Okonkwo, signed on Saturday, starts at tight end. Skattebo, Monangai and Jake Ferguson all out on the bench, Mike Evans questionable — and still no defense. Eight active."}, "lede": "A 9.60 loss to a team that scored 56.60 the week before. You have the <b>second-fewest points conceded<\/b> in the league and a 4-5 record, which is unlucky by about two thirds of a win. Goff is back in the lineup, as requested. There is still no defense."}, {"tag": "Michael", "name": "Bijon Frise's", "color": "#e0aaff", "rank": 8, "rec": "3-6", "pf": 893.5, "pa": 1021.4, "ap": "34-47", "luck": -0.78, "prank": 8, "pmove": -1, "prate": 60.6, "scores": [90.7, 63.8, 77.95, 134.65, 111.05, 111.25, 97.45, 112.85, 93.8], "res": ["L", "L", "L", "W", "L", "W", "L", "L", "W"], "ranks": [8, 10, 10, 9, 9, 9, 10, 10, 8], "hi": 134.65, "hiw": 4, "lo": 63.8, "low": 2, "next": {"opp": "Now I'll Do A Lil' Tuten", "proj": 93.3, "oproj": 110.7, "fav": false, "line": 17.4, "wp": 27, "left": 9}, "lc": {"sev": "red", "note": "<b>Jayden Daniels is on the bench and Bryce Young is at quarterback<\/b>, four days after Daniels scored 17.3 in a win. Puka Nacua, who scored 28.0 the same afternoon, is doubtful and also benched — that one is defensible. Josh Jacobs out and TreVeyon Henderson questionable behind him. Nine active."}, "lede": "You won by 29.90 off Puka Nacua and Jayden Daniels and have put <b>both of them on the bench<\/b> for Sunday. 1,021.40 points conceded is a league record, so some of 3-6 is not your fault. The Daniels part is."}, {"tag": "Nick", "name": "Fried Rice", "color": "#8ecae6", "rank": 7, "rec": "4-5", "pf": 877.75, "pa": 869.25, "ap": "38-43", "luck": -0.22, "prank": 6, "pmove": -1, "prate": 63.7, "scores": [80.65, 77.6, 109.4, 59.35, 135.95, 90.7, 102.55, 135.5, 86.05], "res": ["L", "L", "L", "L", "W", "W", "W", "W", "L"], "ranks": [9, 9, 9, 10, 10, 10, 8, 7, 7], "hi": 135.95, "hiw": 5, "lo": 59.35, "low": 4, "next": {"opp": "Country Roads Take Mahomes", "proj": 101.7, "oproj": 97.1, "fav": true, "line": 4.6, "wp": 56, "left": 9}, "lc": {"sev": "red", "note": "<b>Saquon Barkley is on the bench.<\/b> Devin Singletary — signed at 9:57 on Sunday morning — is starting at running back instead. Nine active with a defense in the slot, which is more than most of this league manages, and the best player on the roster is not in it."}, "lede": "You asked for a UI/UX update, so here it is, and it has opinions about your roster. 135.50 and a 78.90-point win became <b>86.05 and a 48.95-point loss<\/b>, the biggest drop in the league, in a week when you signed Devin Singletary on Sunday morning and started him ahead of Saquon Barkley. 10/10, no training needed."}, {"tag": "Ryan", "name": "Zachubus", "color": "#ffd6a5", "rank": 10, "rec": "3-6", "pf": 773.0, "pa": 986.5, "ap": "19-62", "luck": 0.89, "prank": 10, "pmove": 0, "prate": 44.0, "scores": [55.05, 144.1, 92.1, 109.05, 76.0, 66.6, 68.45, 82.65, 79.0], "res": ["L", "W", "W", "W", "L", "L", "L", "L", "L"], "ranks": [10, 7, 6, 3, 6, 8, 9, 9, 10], "hi": 144.1, "hiw": 2, "lo": 55.05, "low": 1, "next": {"opp": "Brought to you by Claude", "proj": 92.8, "oproj": 101.0, "fav": false, "line": 8.2, "wp": 39, "left": 9}, "lc": {"sev": "ok", "note": "<b>Nine active, a defense in the slot, and Christian McCaffrey correctly started<\/b> after a week on the bench — he led the team with 21.7. Mahomes, Waddle and A.J. Brown are all questionable, which is why Ryan Flournoy is in the lineup. The tidiest roster in the league belongs to the bottom of the table, as usual."}, "lede": "<b>19-62 against the whole league<\/b>, worst by thirteen games, and somehow 3-6. You also have nine starters active, a defense in the slot and the only clean lineup check in the competition. The tidiest roster in the league is in last place and this page does not know what to tell you."}], "weeks": [{"cap": "<b>Now I'll Do A Lil' Tuten<\/b> top-scores with 145.50; Zachubus props up the week on 55.05. <b>Now I'll Do A Lil' Tuten<\/b> leads the table at 1-0."}, {"cap": "<b>Zachubus<\/b> top-scores with 144.10; Bijon Frise's props up the week on 63.80. <b>Nothing Too Fancy<\/b> leads the table at 2-0."}, {"cap": "<b>Brought to you by Claude<\/b> top-scores with 118.90; Now I'll Do A Lil' Tuten props up the week on 73.35. <b>Nothing Too Fancy<\/b> leads the table at 3-0."}, {"cap": "<b>Country Roads Take Mahomes<\/b> top-scores with 135.55; Fried Rice props up the week on 59.35. <b>Country Roads Take Mahomes<\/b> leads the table at 3-1."}, {"cap": "<b>Fried Rice<\/b> top-scores with 135.95; Tiger King Dethroned props up the week on 75.65. <b>Nothing Too Fancy<\/b> leads the table at 4-1."}, {"cap": "<b>Now I'll Do A Lil' Tuten<\/b> top-scores with 134.70; Zachubus props up the week on 66.60. <b>Now I'll Do A Lil' Tuten<\/b> leads the table at 4-2."}, {"cap": "<b>7th Floor Crew<\/b> top-scores with 143.60; Zachubus props up the week on 68.45. <b>Nothing Too Fancy<\/b> leads the table at 5-2."}, {"cap": "<b>Now I'll Do A Lil' Tuten<\/b> top-scores with 143.20; Tiger King Dethroned props up the week on 56.60. <b>Nothing Too Fancy<\/b> leads the table at 6-2. Joe Burrow's 44.10 is the biggest individual line in league history."}, {"cap": "<b>Now I'll Do A Lil' Tuten<\/b> top-scores with 135.00; MidnightCoker props up the week on 63.90. <b>Nothing Too Fancy<\/b> leads the table at 7-2. Lil' Tuten becomes the first team past a thousand points."}]};</script>
+<script>(function(){
+var D=window.R52,T=D.teams,N=T.length,NW=D.weeks.length;
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+var seat=-1,KEY='racket-seat';
+function f2(x){return x.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function ord(n){return n+(['th','st','nd','rd'][(n%100>10&&n%100<14)?0:Math.min(n%10,4)%4]||'th')}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+
+/* ---------- seat picker ---------- */
+var seatsEl=$('#r52 .seats');
+T.forEach(function(t,i){
+  var b=document.createElement('button');b.type='button';b.className='seat';b.style.setProperty('--c',t.color);
+  b.setAttribute('aria-pressed','false');b.dataset.i=i;
+  b.innerHTML='<b>'+esc(t.tag)+'</b><small>'+esc(t.name)+'</small><em>'+t.rec+'</em>';
+  b.addEventListener('click',function(){setSeat(seat===i?-1:i,true)});
+  seatsEl.appendChild(b);
+});
+
+/* ---------- playoff odds, same model as the Lab ---------- */
+function gauss(){var u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+var odds=null;
+function runOdds(){
+  var box=$('.labsim');if(!box)return;var S=JSON.parse(box.dataset.sim),P=S.teams,n=P.length;
+  var AV=P.map(function(t){return t.avg!=null?t.avg:t.pts}),L=AV.reduce(function(a,v){return a+v},0)/n;
+  var mu=AV.map(function(v){return L+S.shrink*(v-L)}),po=new Array(n).fill(0),ws=new Array(n).fill(0),idx=P.map(function(_,i){return i});
+  for(var s=0;s<S.seasons;s++){
+    var st=mu.map(function(m){return m+gauss()*6}),w=P.map(function(t){return t.w}),p=P.map(function(t){return t.pts});
+    for(var wk=0;wk<S.weeks;wk++){var PR=[];
+      if(S.sched&&wk<S.sched.length)PR=S.sched[wk];
+      else{for(var i=n-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),tmp=idx[i];idx[i]=idx[j];idx[j]=tmp}for(var k0=0;k0<n;k0+=2)PR.push([idx[k0],idx[k0+1]])}
+      for(var k=0;k<PR.length;k++){var a=PR[k][0],b=PR[k][1],sa=st[a]+gauss()*S.sigma,sb=st[b]+gauss()*S.sigma;p[a]+=sa;p[b]+=sb;if(sa>sb)w[a]++;else w[b]++}}
+    var o=P.map(function(_,i){return i}).sort(function(a,b){return (w[b]-w[a])||(p[b]-p[a])});
+    for(var q=0;q<S.spots;q++)po[o[q]]++;for(var z=0;z<n;z++)ws[z]+=w[z];
+  }
+  odds={};P.forEach(function(t,i){odds[t.tag]={po:po[i]/S.seasons*100,w:ws[i]/S.seasons}});
+  paintOdds();
+}
+function paintOdds(){
+  var el=$('#r52 .odds');if(!el||seat<0||!odds)return;var o=odds[T[seat].tag];
+  el.querySelector('.n').textContent=o.po.toFixed(0)+'%';
+  el.querySelector('.d').textContent='3,000 seasons, same model as the Lab. Average finish: '+o.w.toFixed(1)+' wins.';
+  el.querySelector('.meter i').style.width=o.po.toFixed(1)+'%';
+}
+
+/* ---------- briefing ---------- */
+var sparkW=0;
+function spark(t){
+  var W=Math.max(200,sparkW||300),H=54,sc=t.scores,lo=40,hi=150,pts=sc.map(function(v,k){return [8+k*(W-16)/(NW-1),H-6-(Math.max(lo,Math.min(hi,v))-lo)/(hi-lo)*(H-12)]});
+  var d=pts.map(function(p,k){return (k?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)}).join(' ');
+  var dots=pts.map(function(p,k){var won=t.res[k]==='W';return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="4.2" fill="'+(won?'var(--seat)':'#150e0d')+'" stroke="var(--seat)" stroke-width="1.6"><title>Week '+(k+1)+': '+f2(sc[k])+' ('+(won?'won':'lost')+')</title></circle>'}).join('');
+  return '<svg class="spark" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Weekly scores, filled dots are wins"><path d="'+d+'" fill="none" stroke="var(--seat)" stroke-width="1.6" opacity=".55" vector-effect="non-scaling-stroke"/>'+dots+'</svg>';
+}
+function renderBrief(){
+  var el=$('#r52 .brief');if(seat<0){el.innerHTML='';return}
+  var t=T[seat],lcCol={red:'#ff5a5a',amber:'#ffc21a',ok:'#3ddc84',grey:'#a89c86'}[t.lc.sev]||'#a89c86',lcWord={red:'Red',amber:'Amber',ok:'Clean',grey:'Note'}[t.lc.sev];
+  var luckTxt=t.luck>0.25?'The schedule has been worth about '+t.luck.toFixed(2)+' wins to you.':t.luck<-0.25?'The schedule has cost you about '+Math.abs(t.luck).toFixed(2)+' wins.':'Your record is almost exactly what your scoring has earned.';
+  var mv=t.pmove>0?'up '+t.pmove:t.pmove<0?'down '+(-t.pmove):'no change';
+  var nx=t.next,line=nx.fav?'Favoured by '+nx.line.toFixed(1):'Underdog by '+nx.line.toFixed(1);
+  sparkW=Math.round((el.clientWidth||600)*(window.innerWidth<=820?1:.5))-(window.innerWidth<=820?56:70);
+  el.innerHTML=
+   '<div class="top"><h2>'+esc(t.tag)+', here is <span>your week</span>.</h2><div class="who">'+esc(t.name)+'<button type="button" class="clr">Leave seat</button></div></div>'+
+   '<p class="lede">'+t.lede+'</p>'+
+   '<div class="bgrid">'+
+    '<div class="bx"><div class="k">The table</div><div class="n s">'+ord(t.rank)+'</div><div class="d">'+t.rec+' · '+f2(t.pf)+' for, '+f2(t.pa)+' against</div></div>'+
+    '<div class="bx"><div class="k">Against the whole league</div><div class="n">'+t.ap+'</div><div class="d">'+luckTxt+'</div></div>'+
+    '<div class="bx odds"><div class="k">Playoff odds</div><div class="n s">…</div><div class="meter"><i></i></div><div class="d">Running 3,000 seasons.</div></div>'+
+    '<div class="bx"><div class="k">Power ranking</div><div class="n">'+ord(t.prank)+'</div><div class="d">'+mv+' on last Tuesday · rating '+t.prate.toFixed(1)+'</div></div>'+
+    '<div class="bx wide"><div class="k">Sunday: '+esc(nx.opp)+'</div><div class="n">'+nx.proj.toFixed(1)+' <span style="color:var(--pulp-dim);font-size:.6em">v '+nx.oproj.toFixed(1)+'</span></div><div class="d">'+line+' in our book · '+nx.wp+'% to win · '+nx.left+' of 9 starters active</div><div class="meter"><i style="width:'+nx.wp+'%"></i></div></div>'+
+    '<div class="bx wide"><div class="k">Your nine weeks (filled dot = win)</div>'+spark(t)+'<div class="d">High '+f2(t.hi)+' in Week '+t.hiw+' · low '+f2(t.lo)+' in Week '+t.low+'</div></div>'+
+    '<div class="bx all lc" style="--lc:'+lcCol+'"><div class="k">Lineup check: <b>'+lcWord+'</b></div><p>'+t.lc.note+'</p></div>'+
+   '</div>';
+  el.querySelector('.clr').addEventListener('click',function(){setSeat(-1,true)});
+  if(odds)paintOdds();else setTimeout(runOdds,60);
+}
+
+/* ---------- light the seat across the page ---------- */
+var mo=null,hlTimer=0;
+function highlight(){
+  $$('.seat-hit').forEach(function(e){e.classList.remove('seat-hit')});
+  $$('.seat-row').forEach(function(e){e.classList.remove('seat-row')});
+  if(seat<0)return;var t=T[seat],root=$('.wrap');if(!root)return;
+  var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),nd,hits=[];
+  var tagRe=new RegExp('^\\s*'+t.tag+'(\\s*·|\\s*$)');
+  while((nd=w.nextNode())){var p=nd.parentElement;if(!p||p.closest('#r52,.copy,script,style,option,select'))continue;
+    var s=nd.nodeValue;if(s.length>90)continue;
+    if(s.indexOf(t.name)>=0||(s.length<40&&tagRe.test(s)))hits.push(p)}
+  hits.forEach(function(p){p.classList.add('seat-hit');
+    var r=p.closest('.r,tr,.row,li');if(r&&!r.closest('.game')&&r.getBoundingClientRect().height<120)r.classList.add('seat-row')});
+}
+function watch(){var root=$('.wrap');if(!root||!window.MutationObserver)return;
+  mo=new MutationObserver(function(){clearTimeout(hlTimer);hlTimer=setTimeout(function(){mo.disconnect();highlight();mo.observe(root,{childList:true,subtree:true})},350)});
+  mo.observe(root,{childList:true,subtree:true})}
+
+function setSeat(i,user){
+  seat=i;
+  $$('#r52 .seat').forEach(function(b){b.setAttribute('aria-pressed',String(+b.dataset.i===i))});
+  if(i>=0){document.body.dataset.seat=T[i].tag;document.documentElement.style.setProperty('--seat',T[i].color);
+    document.documentElement.style.setProperty('--seat-soft',T[i].color+'29')}
+  else{delete document.body.dataset.seat}
+  var chip=$('.dock .me');chip.textContent=i>=0?T[i].tag+'’s seat':'Pick your seat';
+  renderBrief();highlight();race.focusTeam(i);
+  if(user){try{localStorage.setItem(KEY,i>=0?T[i].tag:'')}catch(e){}
+    try{history.replaceState(null,'',i>=0?'#'+T[i].tag.toLowerCase():location.pathname+location.search)}catch(e){}}
+}
+
+/* ---------- the season race ---------- */
+var race=(function(){
+  var box=$('#r52 .race'),svg=$('svg',box),rng=$('input',box),btn=$('.ctl button',box),cap=$('.cap',box),wkno=$('.wkno',box);
+  var NSV='http://www.w3.org/2000/svg',pos=0,playing=false,raf=0,last=0,geo=null,els=[],focus=-1,hover=-1,played=false;
+  function mk(n,a,par){var e=document.createElementNS(NSV,n);for(var k in a)e.setAttribute(k,a[k]);(par||svg).appendChild(e);return e}
+  function sm(u){return u*u*(3-2*u)}
+  function yAt(i,p){var k=Math.min(NW-2,Math.floor(p)),u=p-k,a=T[i].ranks[k],b=T[i].ranks[Math.min(NW-1,k+1)];if(p>=NW-1)return geo.y(T[i].ranks[NW-1]);return geo.y(a+(b-a)*sm(u))}
+  function build(){
+    var W=Math.max(320,Math.round(box.clientWidth-(window.innerWidth<=600?20:32))),small=W<620,rowH=small?30:36,top=30,left=30,right=small?74:238,H=top+rowH*N+8;
+    geo={W:W,H:H,small:small,x:function(p){return left+p*(W-left-right)/(NW-1)},y:function(r){return top+(r-.5)*rowH}};
+    svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.innerHTML='';els=[];
+    var defs=mk('defs',{}),cp=mk('clipPath',{id:'r52clip'},defs);geo.clip=mk('rect',{x:0,y:0,width:0,height:H},cp);
+    for(var r=1;r<=N;r++)mk('text',{x:8,y:geo.y(r)+5,'font-size':15,fill:r<=6?'#a89c86':'#6b6058','text-anchor':'middle'}).textContent=r;
+    for(var k=0;k<NW;k++){mk('line',{x1:geo.x(k),x2:geo.x(k),y1:top-4,y2:H-6,stroke:'rgba(255,255,255,.06)'});
+      mk('text',{x:geo.x(k),y:16,'font-size':14,fill:'#a89c86','text-anchor':'middle'}).textContent=(small?'':'Wk ')+(k+1)}
+    var py=top+6*rowH;mk('line',{x1:left-10,x2:W-4,y1:py,y2:py,stroke:'#ffc21a','stroke-dasharray':'2 6','stroke-width':1.4,opacity:.7});
+    mk('text',{x:geo.x(NW-1)-10,y:py-5,'font-size':13,fill:'#ffc21a','text-anchor':'end',opacity:.9}).textContent='playoff line';
+    var gl=mk('g',{'clip-path':'url(#r52clip)'});
+    T.forEach(function(t,i){var d='';for(var s=0;s<=(NW-1)*14;s++){var p=s/14;d+=(s?'L':'M')+geo.x(p).toFixed(1)+' '+yAt(i,p).toFixed(1)}
+      var g=mk('path',{d:d,stroke:t.color,'class':'glow'},gl),l=mk('path',{d:d,stroke:t.color,'class':'ln'},gl);
+      var hd=mk('g',{'class':'hd',tabindex:0,role:'button','aria-label':t.name});
+      mk('circle',{r:6.5,fill:'#150e0d',stroke:t.color,'stroke-width':3},hd);
+      var tx=mk('text',{x:12,y:5,'font-size':small?14:15.5,fill:t.color},hd);tx.textContent=small?t.tag:t.name;
+      function over(){hover=i;dim()}function out(){hover=-1;dim()}
+      hd.addEventListener('mouseenter',over);hd.addEventListener('mouseleave',out);hd.addEventListener('focus',over);hd.addEventListener('blur',out);
+      hd.addEventListener('click',function(){setSeat(seat===i?-1:i,true)});
+      hd.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();setSeat(seat===i?-1:i,true)}});
+      els.push({g:g,l:l,hd:hd})});
+    dim();draw();
+  }
+  function dim(){var a=hover>=0?hover:focus;svg.classList.toggle('dim',a>=0);els.forEach(function(e,i){var on=i===a||(hover>=0&&i===focus);
+    e.g.classList.toggle('on',on);e.l.classList.toggle('on',on);e.hd.classList.toggle('on',on)})}
+  function draw(){if(!geo)return;geo.clip.setAttribute('width',geo.x(pos)+1);
+    els.forEach(function(e,i){e.hd.setAttribute('transform','translate('+geo.x(pos).toFixed(1)+','+yAt(i,pos).toFixed(1)+')')});
+    var k=Math.min(NW-1,Math.round(pos));wkno.textContent='Week '+(k+1);cap.innerHTML=D.weeks[k].cap;
+    if(document.activeElement!==rng)rng.value=pos;rng.setAttribute('aria-valuetext','Week '+(k+1))}
+  function tick(ts){if(!playing)return;var dt=Math.min(60,ts-last);last=ts;pos+=dt/1150;
+    if(pos>=NW-1){pos=NW-1;playing=false;btn.textContent='↺';btn.setAttribute('aria-label','Replay the season')}
+    draw();if(playing)raf=requestAnimationFrame(tick)}
+  function play(){if(pos>=NW-1)pos=0;playing=true;btn.textContent='❚❚';btn.setAttribute('aria-label','Pause');last=performance.now();raf=requestAnimationFrame(tick)}
+  function pause(){playing=false;cancelAnimationFrame(raf);btn.textContent=pos>=NW-1?'↺':'▶';btn.setAttribute('aria-label','Play the season')}
+  btn.addEventListener('click',function(){playing?pause():play()});
+  rng.max=NW-1;rng.addEventListener('input',function(){pause();pos=+rng.value;draw()});
+  var rz=0;window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(build,160)});
+  build();
+  if(reduce){pos=NW-1;draw();btn.textContent='↺'}
+  else if(window.IntersectionObserver){var io=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting&&!played){played=true;play();io.disconnect()}})},{threshold:.45});io.observe(box)}
+  else{pos=NW-1;draw()}
+  return {focusTeam:function(i){focus=i;dim()}};
+})();
+
+/* ---------- dock ---------- */
+(function(){
+  var dock=$('.dock'),links=$$('.dock a'),pg=$('.dock .pg'),secs=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1))});
+  function spy(){var y=window.scrollY+window.innerHeight*.38,cur=0;secs.forEach(function(s,i){if(s&&s.getBoundingClientRect().top+window.scrollY<=y)cur=i});
+    links.forEach(function(a,i){var on=i===cur;if(a.classList.contains('on')!==on){a.classList.toggle('on',on);if(on&&a.scrollIntoView&&dock.scrollWidth)try{var n=a.parentNode;n.scrollLeft=a.offsetLeft-n.clientWidth/2+a.clientWidth/2}catch(e){}}});
+    var h=document.documentElement.scrollHeight-window.innerHeight;pg.style.width=(h>0?window.scrollY/h*100:0)+'%'}
+  var tk=false;window.addEventListener('scroll',function(){if(!tk){tk=true;requestAnimationFrame(function(){tk=false;spy()})}},{passive:true});spy();
+  $('.dock .me').addEventListener('click',function(){$('#r52').scrollIntoView({behavior:reduce?'auto':'smooth'})});
+})();
+
+/* ---------- release notes ---------- */
+(function(){var dlg=$('dialog.notes');if(!dlg)return;
+  $('#r52 .ed button').addEventListener('click',function(){if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','')});
+  $('.x',dlg).addEventListener('click',function(){dlg.close?dlg.close():dlg.removeAttribute('open')});
+  dlg.addEventListener('click',function(e){if(e.target===dlg&&dlg.close)dlg.close()});
+})();
+
+/* ---------- start ---------- */
+var want='';try{want=(location.hash||'').slice(1).toLowerCase()}catch(e){}
+if(!want){try{want=(localStorage.getItem(KEY)||'').toLowerCase()}catch(e){}}
+var ix=-1;T.forEach(function(t,i){if(t.tag.toLowerCase()===want)ix=i});
+setSeat(ix,false);watch();
 })();
 </script>
 </body>
